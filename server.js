@@ -2,8 +2,8 @@ const express = require("express");
 const fetch = require("node-fetch");
 const app = express();
 
-const TOKEN = "ТВОЙ_ТГ_ТОКЕН";
-const CHAT_ID = "ТВОЙ_CHAT_ID";
+const TOKEN = "8982908572:AAE87wJZInQbF1nistu2GZHRmtxWQNNVgV8";
+const CHAT_ID = "8767539621";
 const IMAGE_URL = "https://i.imgur.com/yourphoto.jpg";
 
 app.get("/", (req, res) => {
@@ -156,7 +156,7 @@ button{
 
 <div class="screen">
  <div>
-  <div class="text">Крис, ты придёшь? 😳</div>
+  <div class="text">Крис, ты придёшь на свидание? 😳</div>
   <input type="date" id="date"><br>
   <input type="time" id="time"><br>
 
