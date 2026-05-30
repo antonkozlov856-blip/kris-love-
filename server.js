@@ -137,16 +137,10 @@ app.get("/yes", async (req, res) => {
   const time = req.query.time;
 
   const text = encodeURIComponent(
-    "💘 ОНА СОГЛАСИЛАСЬ!\\n📅 Дата: " + date + "\\n⏰ Время: " + time
+    "💘 ОНА СОГЛАСИЛАСЬ!\n📅 Дата: " + date + "\n⏰ Время: " + time
   );
 
-  await fetch(\`https://api.telegram.org/bot\${TOKEN}/sendMessage?chat_id=\${CHAT_ID}&text=\${text}\`);
+  await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${text}`);
 
   res.send("ok");
-});
-
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log("Server running");
 });
