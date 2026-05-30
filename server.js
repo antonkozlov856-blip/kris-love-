@@ -1,5 +1,10 @@
 const express = require("express");
+const fetch = require("node-fetch"); // важно
 const app = express();
+
+// 🔥 ВСТАВЬ СЮДА
+const TOKEN = "ТВОЙ_ТГ_ТОКЕН";
+const CHAT_ID = "ТВОЙ_CHAT_ID";
 
 app.get("/", (req, res) => {
   res.send(`
@@ -15,21 +20,23 @@ app.get("/", (req, res) => {
           background: linear-gradient(135deg, #1e293b, #0f172a);
           color: white;
           text-align: center;
-        }
-
-        .box {
-          margin-top: 100px;
+          overflow: hidden;
         }
 
         h1 {
-          font-size: 28px;
-          margin-bottom: 20px;
+          margin-top: 80px;
+          font-size: 30px;
+          animation: fade 2s ease;
+        }
+
+        .box {
+          margin-top: 30px;
         }
 
         input {
           padding: 10px;
           margin: 8px;
-          border-radius: 8px;
+          border-radius: 10px;
           border: none;
           font-size: 16px;
         }
@@ -41,26 +48,45 @@ app.get("/", (req, res) => {
           border-radius: 10px;
           border: none;
           cursor: pointer;
+          transition: 0.2s;
         }
 
         #yes {
           background: #22c55e;
-          color: white;
         }
 
         #no {
           background: #ef4444;
-          color: white;
           position: absolute;
+        }
+
+        button:hover {
+          transform: scale(1.1);
+        }
+
+        @keyframes fade {
+          from { opacity: 0; transform: translateY(-20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        .heart {
+          position: absolute;
+          animation: float 6s linear infinite;
+          color: pink;
+        }
+
+        @keyframes float {
+          from { transform: translateY(100vh); }
+          to { transform: translateY(-10vh); }
         }
       </style>
     </head>
 
     <body>
 
-      <div class="box">
-        <h1>Крис, пойдешь со мной на свидание? 💖</h1>
+      <h1>Крис, пойдешь со мной на свидание? 💖</h1>
 
+      <div class="box">
         <input type="date" id="date"><br>
         <input type="time" id="time"><br>
 
@@ -78,7 +104,9 @@ app.get("/", (req, res) => {
             return;
           }
 
-          document.body.innerHTML = "<h1 style='margin-top:100px;'>❤️ Я буду ждать тебя ❤️</h1>";
+          fetch('/yes?date=' + d + '&time=' + t);
+
+          document.body.innerHTML = "<h1 style='margin-top:100px;'>💘 Я буду ждать тебя 💘</h1>";
         }
 
         function move() {
@@ -86,11 +114,47 @@ app.get("/", (req, res) => {
           b.style.left = Math.random() * (window.innerWidth - 100) + "px";
           b.style.top = Math.random() * (window.innerHeight - 50) + "px";
         }
+
+        // 💘 сердечки (лёгкие)
+        setInterval(() => {
+          let heart = document.createElement("div");
+          heart.className = "heart";
+          heart.innerHTML = "❤️";
+          heart.style.left = Math.random() * 100 + "vw";
+          heart.style.fontSize = (Math.random() * 20 + 10) + "px";
+
+          document.body.appendChild(heart);
+
+          setTimeout(() => heart.remove(), 6000);
+        }, 500);
       </script>
 
     </body>
   </html>
   `);
+});
+
+// 📩 Telegram
+app.get("/yes", async (req, res) => {
+  try {
+    const text = encodeURIComponent(
+      "💘 ОНА СОГЛАСИЛАСЬ!\\n📅 Дата: " + req.query.date + "\\n⏰ Время: " + req.query.time
+    );
+
+    await fetch(
+      "https://api.telegram.org/bot" +
+      TOKEN +
+      "/sendMessage?chat_id=" +
+      CHAT_ID +
+      "&text=" +
+      text
+    );
+
+    res.send("ok");
+  } catch (e) {
+    console.log(e);
+    res.send("error");
+  }
 });
 
 const PORT = process.env.PORT || 3000;
