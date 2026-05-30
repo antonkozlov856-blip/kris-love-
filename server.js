@@ -18,9 +18,9 @@ res.send(`
 body{
  margin:0;
  font-family:Arial;
- background:linear-gradient(135deg,#1e293b,#0f172a);
  color:white;
  overflow:hidden;
+ transition: background 0.6s;
 }
 
 /* экраны */
@@ -89,14 +89,12 @@ button{
  padding:12px;
  border-radius:20px;
  width:85%;
- text-align:center;
  transition:0.4s;
 }
 
 /* финал */
 .final{
  flex-direction:column;
- background:radial-gradient(circle,#ff4d6d,#ff006e);
 }
 .final h1{
  font-size:30px;
@@ -119,23 +117,19 @@ button{
 
 <div id="notif">💬 Я тебя тоже ❤️</div>
 
-<!-- старт -->
 <div class="screen active">
  <div class="text">💌 Крис… нажми куда угодно</div>
 </div>
 
-<!-- текст -->
 <div class="screen"><div class="text" id="t1"></div></div>
 <div class="screen"><div class="text" id="t2"></div></div>
 
-<!-- фото -->
 <div class="screen">
  <img src="${IMAGE_URL}" class="photo" id="photo">
 </div>
 
 <div class="screen"><div class="text" id="t3"></div></div>
 
-<!-- выбор -->
 <div class="screen">
  <div>
   <div class="text">Крис, ты придёшь? 😳</div>
@@ -148,7 +142,6 @@ button{
  </div>
 </div>
 
-<!-- финал -->
 <div class="screen final">
  <h1>💘 Крис, я буду ждать тебя 💘</h1>
  <p>мне правда хочется провести этот день с тобой</p>
@@ -159,7 +152,22 @@ button{
 let current=0;
 let screens=document.querySelectorAll(".screen");
 
-/* клик по экрану */
+/* 💖 массив фонов (от тёмного к светлому) */
+let backgrounds = [
+ "linear-gradient(135deg,#3b0a1a,#1a0a0f)",
+ "linear-gradient(135deg,#5a0f2a,#2a0f17)",
+ "linear-gradient(135deg,#7a143a,#3a1420)",
+ "linear-gradient(135deg,#a61e4d,#4d1e2e)",
+ "linear-gradient(135deg,#d6336c,#6b2b45)",
+ "linear-gradient(135deg,#ff4d8d,#8a3a5c)",
+ "linear-gradient(135deg,#ff80ab,#b84d73)"
+];
+
+function updateBackground(){
+ document.body.style.background = backgrounds[current] || backgrounds[backgrounds.length-1];
+}
+
+/* клик */
 document.body.addEventListener("click",(e)=>{
  if(e.target.tagName==="BUTTON") return;
  if(current===screens.length-1) return;
@@ -171,6 +179,8 @@ function next(){
  screens[current].classList.remove("active");
  current++;
  screens[current].classList.add("active");
+
+ updateBackground();
  onScreen();
  vibrate();
 }
@@ -190,7 +200,7 @@ function type(el,text){
  },35);
 }
 
-/* логика экранов */
+/* логика */
 function onScreen(){
 
  if(current===1){
@@ -234,7 +244,7 @@ function showNotif(){
  },2000);
 }
 
-/* кнопка нет */
+/* нет */
 function move(){
  let b=document.getElementById("no");
  b.style.left=Math.random()*(window.innerWidth-100)+"px";
@@ -258,7 +268,10 @@ function yes(){
  screens[current].classList.add("active");
 }
 
-/* фон сердечки */
+/* старт фон */
+updateBackground();
+
+/* сердечки */
 setInterval(()=>{
  let h=document.createElement("div");
  h.className="heart";
@@ -290,6 +303,4 @@ app.get("/yes", async (req,res)=>{
  }
 });
 
-app.listen(process.env.PORT||3000,()=>{
- console.log("server started");
-});
+app.listen(process.env.PORT||3000);
