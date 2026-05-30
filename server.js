@@ -2,68 +2,73 @@ const express = require("express");
 const fetch = require("node-fetch");
 const app = express();
 
-// 🔥 ВСТАВЬ СЮДА
+// 🔥 ТВОИ ДАННЫЕ
 const TOKEN = "ТВОЙ_ТГ_ТОКЕН";
 const CHAT_ID = "ТВОЙ_CHAT_ID";
 
-// 📸 СЮДА ВСТАВЬ ССЫЛКУ НА ФОТКУ
+// 📸 ФОТО
 const IMAGE_URL = "https://i.imgur.com/yourphoto.jpg";
 
 app.get("/", (req, res) => {
   res.send(`
   <html>
     <head>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
       <title>❤️</title>
 
       <style>
         body {
           margin: 0;
           font-family: Arial;
-          background: linear-gradient(135deg, #1e293b, #0f172a);
+          background: radial-gradient(circle at top, #ff4d6d, #0f172a);
           color: white;
           text-align: center;
           overflow: hidden;
+          height: 100vh;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
         }
 
         h1 {
-          margin-top: 40px;
-          font-size: 26px;
+          font-size: 22px;
+          margin-bottom: 10px;
+          padding: 0 10px;
         }
 
         img {
-          width: 180px;
-          height: 180px;
+          width: 160px;
+          height: 160px;
           object-fit: cover;
           border-radius: 20px;
-          margin-top: 20px;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+          margin: 10px 0;
+          box-shadow: 0 10px 40px rgba(0,0,0,0.5);
         }
 
         .box {
-          margin-top: 20px;
           display: flex;
           flex-direction: column;
-          align-items: center;
           gap: 10px;
+          align-items: center;
         }
 
         input {
+          width: 200px;
           padding: 10px;
           border-radius: 10px;
           border: none;
           font-size: 16px;
-          width: 200px;
         }
 
         button {
-          padding: 12px 18px;
+          width: 220px;
+          padding: 12px;
           font-size: 16px;
           border-radius: 12px;
           border: none;
           cursor: pointer;
           transition: 0.2s;
-          width: 220px;
         }
 
         #yes { background: #22c55e; }
@@ -73,18 +78,31 @@ app.get("/", (req, res) => {
           position: absolute;
         }
 
-        button:hover {
-          transform: scale(1.05);
-        }
-
-        @keyframes float {
-          from { transform: translateY(100vh); }
-          to { transform: translateY(-10vh); }
+        button:active {
+          transform: scale(0.95);
         }
 
         .heart {
           position: absolute;
-          animation: float 6s linear infinite;
+          font-size: 20px;
+          animation: float 5s linear forwards;
+        }
+
+        @keyframes float {
+          from { transform: translateY(100vh) scale(1); opacity: 1; }
+          to { transform: translateY(-10vh) scale(0.5); opacity: 0; }
+        }
+
+        /* 💥 ВЗРЫВ */
+        .boom {
+          position: absolute;
+          font-size: 24px;
+          animation: boom 1s ease-out forwards;
+        }
+
+        @keyframes boom {
+          0% { transform: scale(1); opacity: 1; }
+          100% { transform: scale(3) translateY(-100px); opacity: 0; }
         }
       </style>
     </head>
@@ -120,7 +138,18 @@ app.get("/", (req, res) => {
         }
 
         function love() {
-          alert("❤️ Я тоже тебя люблю ❤️");
+          for (let i = 0; i < 25; i++) {
+            let heart = document.createElement("div");
+            heart.className = "boom";
+            heart.innerHTML = "❤️";
+            heart.style.left = Math.random() * window.innerWidth + "px";
+            heart.style.top = Math.random() * window.innerHeight + "px";
+            heart.style.fontSize = (20 + Math.random() * 30) + "px";
+
+            document.body.appendChild(heart);
+
+            setTimeout(() => heart.remove(), 1000);
+          }
         }
 
         function move() {
@@ -129,16 +158,18 @@ app.get("/", (req, res) => {
           b.style.top = Math.random() * (window.innerHeight - 50) + "px";
         }
 
+        // 💖 фоновые сердечки
         setInterval(() => {
           let heart = document.createElement("div");
           heart.className = "heart";
           heart.innerHTML = "❤️";
           heart.style.left = Math.random() * 100 + "vw";
-          heart.style.fontSize = (Math.random() * 20 + 10) + "px";
+          heart.style.fontSize = (10 + Math.random() * 20) + "px";
 
           document.body.appendChild(heart);
-          setTimeout(() => heart.remove(), 6000);
-        }, 400);
+
+          setTimeout(() => heart.remove(), 5000);
+        }, 300);
       </script>
 
     </body>
@@ -146,7 +177,7 @@ app.get("/", (req, res) => {
   `);
 });
 
-// 📩 Telegram
+// 📩 TELEGRAM
 app.get("/yes", async (req, res) => {
   try {
     const text = encodeURIComponent(
