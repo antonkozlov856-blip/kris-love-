@@ -2,10 +2,10 @@ const express = require("express");
 const fetch = require("node-fetch");
 const app = express();
 
-const TOKEN = "8982908572:AAE87wJZInQbF1nistu2GZHRmtxWQNNVgV8";
-const CHAT_ID = "8767539621";
+const TOKEN = "ТВОЙ_ТГ_ТОКЕН";
+const CHAT_ID = "ТВОЙ_CHAT_ID";
 
-const IMAGE_URL = "https://ibb.co/20XwVssZ";
+const IMAGE_URL = "https://i.imgur.com/yourphoto.jpg";
 
 app.get("/", (req, res) => {
   res.send(`
@@ -104,20 +104,21 @@ button {
   background: #ef4444;
 }
 
-/* 💬 чат */
-.chat {
+/* 💖 уведомление */
+#notif {
   position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: rgba(0,0,0,0.6);
-  padding: 10px;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100px);
+  background: rgba(0,0,0,0.8);
   color: white;
+  padding: 12px 20px;
+  border-radius: 12px;
   font-size: 14px;
+  transition: 0.4s;
 }
 
-.msg { margin: 4px 0; }
-
-/* 💖 финал */
+/* 💘 финал */
 #final {
   display: none;
   position: fixed;
@@ -150,6 +151,8 @@ button {
 
 <body>
 
+<div id="notif">❤️ Я тебя тоже ❤️</div>
+
 <!-- 💌 -->
 <div id="secret" onclick="openLetter()">
   <div class="envelope">💌</div>
@@ -170,11 +173,6 @@ button {
 <button id="no" onmouseover="move()">Нет 😢</button>
 </div>
 
-<!-- 💬 -->
-<div class="chat" id="chat">
-  <div class="msg">Крис: ты придёшь? 😳</div>
-</div>
-
 <!-- 💖 -->
 <div id="final">
   <h1>💘 Я жду тебя 💘</h1>
@@ -192,26 +190,30 @@ function openLetter() {
   document.getElementById("app").style.display = "flex";
 }
 
-/* 💬 */
-function addChat(text) {
-  let div = document.createElement("div");
-  div.className = "msg";
-  div.innerText = text;
-  document.getElementById("chat").appendChild(div);
+/* ❤️ уведомление */
+function showNotif() {
+  let n = document.getElementById("notif");
+  n.style.transform = "translateX(-50%) translateY(0)";
+  setTimeout(() => {
+    n.style.transform = "translateX(-50%) translateY(-100px)";
+  }, 2000);
 }
 
 /* ❤️ люблю */
 function love() {
   vibrate();
-  addChat("Ты: я тебя люблю ❤️");
+  showNotif();
 
-  setTimeout(() => {
-    addChat("Она печатает...");
-  }, 400);
-
-  setTimeout(() => {
-    addChat("Она: я тебя тоже ❤️");
-  }, 1500);
+  for (let i = 0; i < 20; i++) {
+    let h = document.createElement("div");
+    h.className = "heart";
+    h.innerHTML = "❤️";
+    h.style.left = Math.random() * window.innerWidth + "px";
+    h.style.top = Math.random() * window.innerHeight + "px";
+    h.style.fontSize = (20 + Math.random() * 30) + "px";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 1000);
+  }
 }
 
 /* 😈 */
@@ -233,22 +235,12 @@ function yes() {
     return;
   }
 
-  addChat("Ты: давай встретимся 😏");
-
-  setTimeout(() => addChat("Она печатает..."), 400);
-
-  setTimeout(() => {
-    addChat("Она: да приду 😍");
-    addChat("📅 " + d + " ⏰ " + t);
-  }, 1500);
-
   fetch("/yes?date=" + d + "&time=" + t);
 
   setTimeout(() => {
     document.getElementById("app").style.display = "none";
-    document.getElementById("chat").style.display = "none";
     document.getElementById("final").style.display = "flex";
-  }, 3000);
+  }, 500);
 }
 
 /* ❤️ фон */
