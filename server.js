@@ -21,6 +21,7 @@ body {
   font-family: Arial;
   overflow: hidden;
   height: 100vh;
+  background: #0f172a;
 }
 
 /* 💌 экран письма */
@@ -34,12 +35,12 @@ body {
   justify-content: center;
   align-items: center;
   z-index: 9999;
+  color: white;
 }
 
 .envelope {
   font-size: 90px;
-  cursor: pointer;
-  animation: float 2s infinite ease-in-out;
+  animation: float 2s infinite;
 }
 
 @keyframes float {
@@ -53,13 +54,13 @@ body {
   display: none;
   height: 100vh;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   text-align: center;
 
-  background: linear-gradient(-45deg, #ff4d6d, #1e293b, #0f172a, #ff006e);
+  background: linear-gradient(-45deg, #ff4d6d, #1e293b, #ff006e);
   background-size: 400% 400%;
-  animation: bg 10s ease infinite;
+  animation: bg 8s ease infinite;
   color: white;
 }
 
@@ -69,48 +70,25 @@ body {
   100% { background-position: 0% 50%; }
 }
 
-h1 {
-  font-size: 22px;
-}
-
 .photo {
   width: 160px;
   height: 160px;
   border-radius: 20px;
-  object-fit: cover;
   margin: 10px;
-}
-
-/* 📅 поля */
-input {
-  width: 200px;
-  padding: 10px;
-  border-radius: 10px;
-  border: none;
-  margin: 5px;
 }
 
 /* 🔘 кнопки */
 button {
   width: 220px;
   padding: 12px;
+  margin: 6px;
   border-radius: 12px;
   border: none;
-  margin: 8px;
   font-size: 16px;
 }
 
-/* 💚 да */
-#yes {
-  background: #22c55e;
-}
-
-/* ❤️ пульс */
-#love {
-  background: #ff006e;
-  color: white;
-  animation: pulse 1.2s infinite;
-}
+#yes { background: #22c55e; }
+#love { background: #ff006e; color: white; animation: pulse 1.2s infinite; }
 
 @keyframes pulse {
   0% { transform: scale(1); }
@@ -118,14 +96,49 @@ button {
   100% { transform: scale(1); }
 }
 
-/* 😈 убегающая */
 #no {
-  background: #ef4444;
   position: absolute;
   width: 120px;
+  background: #ef4444;
 }
 
-/* ❤️ сердечки */
+/* 💬 чат */
+.chat {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: rgba(0,0,0,0.6);
+  padding: 10px;
+  color: white;
+  font-size: 14px;
+}
+
+.msg {
+  margin: 4px 0;
+}
+
+/* 💖 финал */
+#final {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: radial-gradient(circle, #ff4d6d, #ff006e);
+  color: white;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+#final h1 {
+  font-size: 34px;
+  animation: pulse 1.5s infinite;
+}
+
+/* ❤️ фон */
 .heart {
   position: absolute;
   animation: floatHeart 5s linear forwards;
@@ -135,28 +148,22 @@ button {
   from { transform: translateY(100vh); opacity: 1; }
   to { transform: translateY(-10vh); opacity: 0; }
 }
-
 </style>
 </head>
 
 <body>
 
-<!-- 💌 письмо -->
+<!-- 💌 -->
 <div id="secret" onclick="openLetter()">
   <div class="envelope">💌</div>
-  <div style="color:white;margin-top:10px;">Нажми чтобы открыть письмо</div>
+  <div>Нажми чтобы открыть письмо</div>
 </div>
 
-<!-- 💖 сайт -->
+<!-- 💖 -->
 <div id="app">
 
-<h1>Крис 💖</h1>
-
+<h2>Крис 💖</h2>
 <img class="photo" src="${IMAGE_URL}" />
-
-<!-- 📅 ДАТА -->
-<input type="date" id="date">
-<input type="time" id="time">
 
 <button id="yes" onclick="yes()">Да 😍</button>
 <button id="love" onclick="love()">Я тебя люблю ❤️</button>
@@ -164,44 +171,60 @@ button {
 
 </div>
 
+<!-- 💬 ЧАТ -->
+<div class="chat" id="chat">
+  <div class="msg">Крис: ты придёшь? 😳</div>
+</div>
+
+<!-- 💖 ФИНАЛ -->
+<div id="final">
+  <h1>💘 Я жду тебя 💘</h1>
+</div>
+
 <script>
+
+function vibrate() {
+  if (navigator.vibrate) {
+    navigator.vibrate(200);
+  }
+}
 
 /* 💌 открыть */
 function openLetter() {
+  vibrate();
   document.getElementById("secret").style.display = "none";
   document.getElementById("app").style.display = "flex";
 }
 
-/* 📩 telegram */
+/* 📩 да */
 function yes() {
-  let d = document.getElementById("date").value;
-  let t = document.getElementById("time").value;
+  vibrate();
 
-  if (!d || !t) {
-    alert("Выбери дату и время ❤️");
-    return;
-  }
+  const d = "согласилась";
+  fetch("/yes");
 
-  fetch("/yes?date=" + d + "&time=" + t);
-
-  document.body.innerHTML = "<h1>💘 Я жду тебя 💘</h1>";
+  document.getElementById("app").style.display = "none";
+  document.getElementById("chat").style.display = "none";
+  document.getElementById("final").style.display = "flex";
 }
 
-/* ❤️ любовь */
+/* ❤️ люблю */
 function love() {
-  for (let i = 0; i < 25; i++) {
-    let h = document.createElement("div");
-    h.className = "heart";
-    h.innerHTML = "❤️";
-    h.style.left = Math.random() * window.innerWidth + "px";
-    h.style.top = Math.random() * window.innerHeight + "px";
-    h.style.fontSize = (20 + Math.random() * 30) + "px";
-    document.body.appendChild(h);
-    setTimeout(() => h.remove(), 1000);
-  }
+  vibrate();
+  alert("❤️ Я тебя тоже ❤️");
+
+  addChat("Она: я тебя тоже ❤️");
 }
 
-/* 😈 кнопка убегает */
+/* 💬 чат */
+function addChat(text) {
+  let div = document.createElement("div");
+  div.className = "msg";
+  div.innerText = text;
+  document.getElementById("chat").appendChild(div);
+}
+
+/* 😈 кнопка */
 function move() {
   let b = document.getElementById("no");
   b.style.left = Math.random() * (window.innerWidth - 100) + "px";
@@ -229,19 +252,13 @@ setInterval(() => {
 /* 📩 TELEGRAM */
 app.get("/yes", async (req, res) => {
   try {
-    const text =
-      "💘 ОНА СОГЛАСИЛАСЬ!\\n📅 " +
-      req.query.date +
-      "\\n⏰ " +
-      req.query.time;
-
     await fetch(
       "https://api.telegram.org/bot" +
       TOKEN +
       "/sendMessage?chat_id=" +
       CHAT_ID +
       "&text=" +
-      encodeURIComponent(text)
+      encodeURIComponent("💘 ОНА СОГЛАСИЛАСЬ")
     );
 
     res.send("ok");
@@ -250,5 +267,4 @@ app.get("/yes", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log("Server started"));
+app.listen(process.env.PORT || 3000, () => console.log("Server started"));
