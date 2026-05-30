@@ -1,4 +1,4 @@
-  const express = require("express");
+const express = require("express");
 const fetch = require("node-fetch");
 const app = express();
 
@@ -21,10 +21,16 @@ body{
  font-family:Arial;
  color:white;
  overflow:hidden;
+}
 
- /* ВАЖНО: сразу ставим фон */
- background: linear-gradient(135deg,#3b0a1a,#1a0a0f);
- transition: background 0.7s ease;
+/* 🔥 ФОН СЛОЙ (главное) */
+#bg{
+ position:fixed;
+ width:100%;
+ height:100%;
+ z-index:-1;
+ background:linear-gradient(135deg,#3b0a1a,#1a0a0f);
+ transition:0.7s;
 }
 
 /* экраны */
@@ -40,10 +46,8 @@ body{
 }
 .active{display:flex;}
 
-/* текст */
 .text{font-size:22px;}
 
-/* кнопки */
 button{
  margin:8px;
  padding:12px 20px;
@@ -95,7 +99,6 @@ button{
  padding:12px;
  border-radius:20px;
  width:85%;
- text-align:center;
  transition:0.4s;
 }
 
@@ -108,7 +111,18 @@ button{
  animation:pulse 1.5s infinite;
 }
 
-/* сердечки */
+/* ❤️ взрыв */
+.explode{
+ position:absolute;
+ font-size:30px;
+ animation:boom 1s forwards;
+}
+@keyframes boom{
+ 0%{transform:scale(0);opacity:1;}
+ 100%{transform:scale(4);opacity:0;}
+}
+
+/* сердечки фон */
 .heart{
  position:absolute;
  animation:float 5s linear forwards;
@@ -122,6 +136,8 @@ button{
 </head>
 
 <body>
+
+<div id="bg"></div>
 
 <div id="notif">💬 Я тебя тоже ❤️</div>
 
@@ -159,9 +175,10 @@ button{
 
 let current=0;
 let screens=document.querySelectorAll(".screen");
+let bg=document.getElementById("bg");
 
-/* 💖 ГАРАНТИРОВАННЫЕ ФОНЫ */
-let backgrounds = [
+/* 💖 фоны */
+let backgrounds=[
  "linear-gradient(135deg,#3b0a1a,#1a0a0f)",
  "linear-gradient(135deg,#5a0f2a,#2a0f17)",
  "linear-gradient(135deg,#7a143a,#3a1420)",
@@ -171,14 +188,9 @@ let backgrounds = [
  "linear-gradient(135deg,#ff80ab,#b84d73)"
 ];
 
-/* сразу ставим фон */
-document.body.style.background = backgrounds[0];
-
-/* смена */
-function updateBackground(){
- if(backgrounds[current]){
-  document.body.style.background = backgrounds[current];
- }
+/* смена фона */
+function updateBg(){
+ bg.style.background = backgrounds[current] || backgrounds[backgrounds.length-1];
 }
 
 /* клик */
@@ -195,7 +207,7 @@ function next(){
  current++;
  screens[current].classList.add("active");
 
- updateBackground();
+ updateBg();
  onScreen();
  vibrate();
 }
@@ -266,7 +278,7 @@ function move(){
  b.style.top=Math.random()*(window.innerHeight-50)+"px";
 }
 
-/* да */
+/* 💘 да + ВЗРЫВ */
 function yes(){
  let d=document.getElementById("date").value;
  let t=document.getElementById("time").value;
@@ -278,12 +290,25 @@ function yes(){
 
  fetch("/yes?date="+d+"&time="+t);
 
- screens[current].classList.remove("active");
- current++;
- screens[current].classList.add("active");
+ /* 💥 взрыв сердца */
+ for(let i=0;i<25;i++){
+  let h=document.createElement("div");
+  h.className="explode";
+  h.innerHTML="❤️";
+  h.style.left=(window.innerWidth/2)+"px";
+  h.style.top=(window.innerHeight/2)+"px";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),1000);
+ }
+
+ setTimeout(()=>{
+  screens[current].classList.remove("active");
+  current++;
+  screens[current].classList.add("active");
+ },700);
 }
 
-/* сердечки */
+/* фон сердечки */
 setInterval(()=>{
  let h=document.createElement("div");
  h.className="heart";
@@ -309,8 +334,7 @@ app.get("/yes", async (req,res)=>{
   "/sendMessage?chat_id="+CHAT_ID+"&text="+encodeURIComponent(text));
 
   res.send("ok");
- }catch(e){
-  console.log(e);
+ }catch{
   res.send("error");
  }
 });
