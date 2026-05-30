@@ -2,10 +2,10 @@ const express = require("express");
 const fetch = require("node-fetch");
 const app = express();
 
-const TOKEN = "ТВОЙ_ТГ_ТОКЕН";
-const CHAT_ID = "ТВОЙ_CHAT_ID";
+const TOKEN = "8982908572:AAE87wJZInQbF1nistu2GZHRmtxWQNNVgV8";
+const CHAT_ID = "8767539621";
 
-const IMAGE_URL = "https://i.imgur.com/yourphoto.jpg";
+const IMAGE_URL = "https://i.postimg.cc/mgt45CF3/IMG-2153.jpg";
 
 app.get("/", (req, res) => {
   res.send(`
