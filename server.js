@@ -1,41 +1,14 @@
 const express = require("express");
+const fetch = require("node-fetch"); // ✅ ВАЖНО
 const app = express();
 
-// 👉 ВСТАВЬ СЮДА СВОИ ДАННЫЕ
-const TOKEN = "ТВОЙ_ТГ_ТОКЕН";
+const TOKEN = "ТВОЙ_ТОКЕН";
 const CHAT_ID = "ТВОЙ_CHAT_ID";
 
-// главная страница
 app.get("/", (req, res) => {
   res.send(`
   <html>
-    <head>
-      <title>❤️</title>
-      <style>
-        body {
-          background: #111;
-          color: white;
-          text-align: center;
-          font-family: Arial;
-          padding-top: 100px;
-        }
-
-        button {
-          padding: 15px;
-          font-size: 18px;
-          margin: 10px;
-          border-radius: 10px;
-          border: none;
-          cursor: pointer;
-        }
-
-        #no {
-          position: absolute;
-        }
-      </style>
-    </head>
-
-    <body>
+    <body style="background:#111;color:white;text-align:center;font-family:Arial;padding-top:100px;">
 
       <h1>Крис, пойдешь со мной на свидание? 💖</h1>
 
@@ -43,7 +16,7 @@ app.get("/", (req, res) => {
       <input type="time" id="time"><br><br>
 
       <button onclick="yes()">Да 😍</button>
-      <button id="no" onmouseover="move()">Нет 😢</button>
+      <button id="no" onmouseover="move()" style="position:absolute;">Нет 😢</button>
 
       <script>
         function yes() {
@@ -56,7 +29,6 @@ app.get("/", (req, res) => {
           }
 
           fetch('/yes?date=' + d + '&time=' + t);
-
           document.body.innerHTML = "<h1>❤️ Я буду ждать тебя ❤️</h1>";
         }
 
@@ -72,23 +44,23 @@ app.get("/", (req, res) => {
   `);
 });
 
-// обработка "Да"
 app.get("/yes", async (req, res) => {
-  const date = req.query.date;
-  const time = req.query.time;
+  try {
+    const text = encodeURIComponent(
+      "💘 ОНА СОГЛАСИЛАСЬ!\\n📅 Дата: " + req.query.date + "\\n⏰ Время: " + req.query.time
+    );
 
-  const text = encodeURIComponent(
-    "💘 ОНА СОГЛАСИЛАСЬ!\n📅 Дата: " + date + "\n⏰ Время: " + time
-  );
+    await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${text}`);
 
-  await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${text}`);
-
-  res.send("ok");
+    res.send("ok");
+  } catch (e) {
+    console.log(e);
+    res.send("error");
+  }
 });
 
-// запуск сервера
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log("Server started on port " + PORT);
+  console.log("SERVER STARTED");
 });
