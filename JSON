@@ -1,7 +1,6 @@
 {
   "name": "date-invite",
   "version": "1.0.0",
-  "description": "Invite Chris to a date ❤️",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
