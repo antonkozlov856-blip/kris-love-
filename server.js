@@ -132,10 +132,18 @@ app.get("/", (req, res) => {
   `);
 });
 
-app.get("/yes", async (req, res) => {
-  const date = req.query.date;
-  const time = req.query.time;
+const express = require("express");
+const app = express();
 
+app.get("/", (req, res) => {
+  res.send("СЕРВЕР РАБОТАЕТ ✅");
+});
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log("Server running");
+});
   const text = encodeURIComponent(
     "💘 ОНА СОГЛАСИЛАСЬ!\n📅 Дата: " + date + "\n⏰ Время: " + time
   );
