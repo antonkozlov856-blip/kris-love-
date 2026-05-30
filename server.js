@@ -134,9 +134,6 @@ app.get("/", (req, res) => {
 
 const express = require("express");
 const app = express();
-
-app.get("/", (req, res) => {
-  res.send("СЕРВЕР РАБОТАЕТ ✅");
 });
 
 const PORT = process.env.PORT || 3000;
