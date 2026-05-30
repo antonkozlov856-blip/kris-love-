@@ -1,4 +1,4 @@
- const express = require("express");
+  const express = require("express");
 const fetch = require("node-fetch");
 const app = express();
 
@@ -15,12 +15,16 @@ res.send(`
 <title>💖</title>
 
 <style>
+
 body{
  margin:0;
  font-family:Arial;
  color:white;
  overflow:hidden;
- transition: background 0.6s;
+
+ /* ВАЖНО: сразу ставим фон */
+ background: linear-gradient(135deg,#3b0a1a,#1a0a0f);
+ transition: background 0.7s ease;
 }
 
 /* экраны */
@@ -51,11 +55,13 @@ button{
 }
 
 #yes{background:#22c55e;}
+
 #love{
  background:#ff006e;
  color:white;
  animation:pulse 1.2s infinite;
 }
+
 #no{
  background:#ef4444;
  position:absolute;
@@ -89,6 +95,7 @@ button{
  padding:12px;
  border-radius:20px;
  width:85%;
+ text-align:center;
  transition:0.4s;
 }
 
@@ -110,6 +117,7 @@ button{
  from{transform:translateY(100vh);}
  to{transform:translateY(-10vh);opacity:0;}
 }
+
 </style>
 </head>
 
@@ -152,7 +160,7 @@ button{
 let current=0;
 let screens=document.querySelectorAll(".screen");
 
-/* 💖 массив фонов (от тёмного к светлому) */
+/* 💖 ГАРАНТИРОВАННЫЕ ФОНЫ */
 let backgrounds = [
  "linear-gradient(135deg,#3b0a1a,#1a0a0f)",
  "linear-gradient(135deg,#5a0f2a,#2a0f17)",
@@ -163,8 +171,14 @@ let backgrounds = [
  "linear-gradient(135deg,#ff80ab,#b84d73)"
 ];
 
+/* сразу ставим фон */
+document.body.style.background = backgrounds[0];
+
+/* смена */
 function updateBackground(){
- document.body.style.background = backgrounds[current] || backgrounds[backgrounds.length-1];
+ if(backgrounds[current]){
+  document.body.style.background = backgrounds[current];
+ }
 }
 
 /* клик */
@@ -172,6 +186,7 @@ document.body.addEventListener("click",(e)=>{
  if(e.target.tagName==="BUTTON") return;
  if(current===screens.length-1) return;
  if(current===5) return;
+
  next();
 });
 
@@ -267,9 +282,6 @@ function yes(){
  current++;
  screens[current].classList.add("active");
 }
-
-/* старт фон */
-updateBackground();
 
 /* сердечки */
 setInterval(()=>{
