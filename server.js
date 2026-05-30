@@ -3,9 +3,8 @@ const app = express();
 
 global.fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
-const TOKEN = "ТВОЙ_ТГ_БОТ_ТОКЕН";
-const CHAT_ID = "ТВОЙ_CHAT_ID";
-
+const TOKEN = "8982908572:AAE87wJZInQbF1nistu2GZHRmtxWQNNVgV8";
+const CHAT_ID = "8767539621";
 app.get("/", (req, res) => {
   res.send(`
   <html>
