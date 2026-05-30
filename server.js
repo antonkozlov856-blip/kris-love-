@@ -4,7 +4,7 @@ const app = express();
 
 const TOKEN = "8982908572:AAE87wJZInQbF1nistu2GZHRmtxWQNNVgV8";
 const CHAT_ID = "8767539621";
-const IMAGE_URL = "https://i.imgur.com/yourphoto.jpg";
+const IMAGE_URL = "https://pin.it/3JYRocSh2";
 
 app.get("/", (req, res) => {
 res.send(`
