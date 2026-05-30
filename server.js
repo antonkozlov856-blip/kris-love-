@@ -1,10 +1,13 @@
 const express = require("express");
-const fetch = require("node-fetch"); // важно
+const fetch = require("node-fetch");
 const app = express();
 
 // 🔥 ВСТАВЬ СЮДА
 const TOKEN = "ТВОЙ_ТГ_ТОКЕН";
 const CHAT_ID = "ТВОЙ_CHAT_ID";
+
+// 📸 СЮДА ВСТАВЬ ССЫЛКУ НА ФОТКУ
+const IMAGE_URL = "https://i.imgur.com/yourphoto.jpg";
 
 app.get("/", (req, res) => {
   res.send(`
@@ -16,7 +19,7 @@ app.get("/", (req, res) => {
       <style>
         body {
           margin: 0;
-          font-family: Arial, sans-serif;
+          font-family: Arial;
           background: linear-gradient(135deg, #1e293b, #0f172a);
           color: white;
           text-align: center;
@@ -24,60 +27,64 @@ app.get("/", (req, res) => {
         }
 
         h1 {
-          margin-top: 80px;
-          font-size: 30px;
-          animation: fade 2s ease;
+          margin-top: 40px;
+          font-size: 26px;
+        }
+
+        img {
+          width: 180px;
+          height: 180px;
+          object-fit: cover;
+          border-radius: 20px;
+          margin-top: 20px;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .box {
-          margin-top: 30px;
+          margin-top: 20px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 10px;
         }
 
         input {
           padding: 10px;
-          margin: 8px;
           border-radius: 10px;
           border: none;
           font-size: 16px;
+          width: 200px;
         }
 
         button {
-          padding: 12px 20px;
-          margin: 10px;
+          padding: 12px 18px;
           font-size: 16px;
-          border-radius: 10px;
+          border-radius: 12px;
           border: none;
           cursor: pointer;
           transition: 0.2s;
+          width: 220px;
         }
 
-        #yes {
-          background: #22c55e;
-        }
-
+        #yes { background: #22c55e; }
+        #love { background: #f43f5e; }
         #no {
           background: #ef4444;
           position: absolute;
         }
 
         button:hover {
-          transform: scale(1.1);
-        }
-
-        @keyframes fade {
-          from { opacity: 0; transform: translateY(-20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        .heart {
-          position: absolute;
-          animation: float 6s linear infinite;
-          color: pink;
+          transform: scale(1.05);
         }
 
         @keyframes float {
           from { transform: translateY(100vh); }
           to { transform: translateY(-10vh); }
+        }
+
+        .heart {
+          position: absolute;
+          animation: float 6s linear infinite;
         }
       </style>
     </head>
@@ -86,11 +93,14 @@ app.get("/", (req, res) => {
 
       <h1>Крис, пойдешь со мной на свидание? 💖</h1>
 
+      <img src="${IMAGE_URL}" />
+
       <div class="box">
-        <input type="date" id="date"><br>
-        <input type="time" id="time"><br>
+        <input type="date" id="date">
+        <input type="time" id="time">
 
         <button id="yes" onclick="yes()">Да 😍</button>
+        <button id="love" onclick="love()">Я люблю тебя ❤️</button>
         <button id="no" onmouseover="move()">Нет 😢</button>
       </div>
 
@@ -109,13 +119,16 @@ app.get("/", (req, res) => {
           document.body.innerHTML = "<h1 style='margin-top:100px;'>💘 Я буду ждать тебя 💘</h1>";
         }
 
+        function love() {
+          alert("❤️ Я тоже тебя люблю ❤️");
+        }
+
         function move() {
           let b = document.getElementById("no");
           b.style.left = Math.random() * (window.innerWidth - 100) + "px";
           b.style.top = Math.random() * (window.innerHeight - 50) + "px";
         }
 
-        // 💘 сердечки (лёгкие)
         setInterval(() => {
           let heart = document.createElement("div");
           heart.className = "heart";
@@ -124,9 +137,8 @@ app.get("/", (req, res) => {
           heart.style.fontSize = (Math.random() * 20 + 10) + "px";
 
           document.body.appendChild(heart);
-
           setTimeout(() => heart.remove(), 6000);
-        }, 500);
+        }, 400);
       </script>
 
     </body>
@@ -152,13 +164,9 @@ app.get("/yes", async (req, res) => {
 
     res.send("ok");
   } catch (e) {
-    console.log(e);
     res.send("error");
   }
 });
 
 const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log("Server started");
-});
+app.listen(PORT, () => console.log("Server started"));
