@@ -1,5 +1,4 @@
-kris-date-site/
-├── package.json
-├── server.js
-└── public/
-    └── index.html
+/my-date-site
+ ├── package.json
+ ├── server.js
+ └── .gitignore
