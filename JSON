@@ -1,11 +1,15 @@
 {
-  "name": "kris-date-site",
+  "name": "date-invite",
   "version": "1.0.0",
-  "type": "module",
-  "dependencies": {
-    "express": "^4.19.2"
-  },
+  "description": "Invite Chris to a date ❤️",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js"
+  },
+  "engines": {
+    "node": "18.x"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
   }
 }
