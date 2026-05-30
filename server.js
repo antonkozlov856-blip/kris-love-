@@ -13,7 +13,7 @@ app.get("/", (req, res) => {
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>💌</title>
+<title>❤️</title>
 
 <style>
 body {
@@ -23,16 +23,16 @@ body {
   height: 100vh;
 }
 
-/* 💌 СЕКРЕТНЫЙ ЭКРАН */
+/* 💌 экран письма */
 #secret {
   position: fixed;
   width: 100%;
   height: 100vh;
   background: radial-gradient(circle at top, #ff4d6d, #0f172a);
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
   z-index: 9999;
 }
 
@@ -44,34 +44,11 @@ body {
 
 @keyframes float {
   0% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
+  50% { transform: translateY(-10px); }
   100% { transform: translateY(0); }
 }
 
-.text {
-  color: white;
-  margin-top: 10px;
-}
-
-/* 💥 ВЗРЫВ КОНВЕРТА */
-.piece {
-  position: absolute;
-  font-size: 50px;
-  animation: explode 0.8s ease-out forwards;
-}
-
-@keyframes explode {
-  0% {
-    transform: scale(1) translate(0,0) rotate(0deg);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(0.5) translate(var(--x), var(--y)) rotate(720deg);
-    opacity: 0;
-  }
-}
-
-/* 🌌 ОСНОВНОЙ САЙТ */
+/* 🌌 основной экран */
 #app {
   display: none;
   height: 100vh;
@@ -92,24 +69,44 @@ body {
   100% { background-position: 0% 50%; }
 }
 
+h1 {
+  font-size: 22px;
+}
+
 .photo {
-  width: 170px;
-  height: 170px;
+  width: 160px;
+  height: 160px;
   border-radius: 20px;
   object-fit: cover;
   margin: 10px;
 }
 
-h1 {
-  font-size: 22px;
+/* 📅 поля */
+input {
+  width: 200px;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  margin: 5px;
 }
 
-/* 💓 кнопка */
-#love {
-  width: 230px;
-  padding: 14px;
+/* 🔘 кнопки */
+button {
+  width: 220px;
+  padding: 12px;
+  border-radius: 12px;
   border: none;
-  border-radius: 14px;
+  margin: 8px;
+  font-size: 16px;
+}
+
+/* 💚 да */
+#yes {
+  background: #22c55e;
+}
+
+/* ❤️ пульс */
+#love {
   background: #ff006e;
   color: white;
   animation: pulse 1.2s infinite;
@@ -121,20 +118,11 @@ h1 {
   100% { transform: scale(1); }
 }
 
-#yes {
-  width: 230px;
-  padding: 12px;
-  border: none;
-  border-radius: 12px;
-  background: #22c55e;
-}
-
+/* 😈 убегающая */
 #no {
+  background: #ef4444;
   position: absolute;
   width: 120px;
-  border-radius: 12px;
-  border: none;
-  background: #ef4444;
 }
 
 /* ❤️ сердечки */
@@ -153,54 +141,50 @@ h1 {
 
 <body>
 
-<!-- 💌 КОНВЕРТ -->
-<div id="secret" onclick="explodeLetter()">
+<!-- 💌 письмо -->
+<div id="secret" onclick="openLetter()">
   <div class="envelope">💌</div>
-  <div class="text">Нажми чтобы открыть письмо</div>
+  <div style="color:white;margin-top:10px;">Нажми чтобы открыть письмо</div>
 </div>
 
-<!-- 💖 САЙТ -->
+<!-- 💖 сайт -->
 <div id="app">
 
 <h1>Крис 💖</h1>
 
 <img class="photo" src="${IMAGE_URL}" />
 
-<button id="yes">Да 😍</button>
-<button id="love" onclick="love()">Я люблю тебя ❤️</button>
+<!-- 📅 ДАТА -->
+<input type="date" id="date">
+<input type="time" id="time">
+
+<button id="yes" onclick="yes()">Да 😍</button>
+<button id="love" onclick="love()">Я тебя люблю ❤️</button>
 <button id="no" onmouseover="move()">Нет 😢</button>
 
 </div>
 
 <script>
 
-/* 💥 АНИМАЦИЯ РАЗЛЁТА КОНВЕРТА */
-function explodeLetter() {
-  const secret = document.getElementById("secret");
+/* 💌 открыть */
+function openLetter() {
+  document.getElementById("secret").style.display = "none";
+  document.getElementById("app").style.display = "flex";
+}
 
-  for (let i = 0; i < 12; i++) {
-    let part = document.createElement("div");
-    part.className = "piece";
-    part.innerHTML = "💌";
+/* 📩 telegram */
+function yes() {
+  let d = document.getElementById("date").value;
+  let t = document.getElementById("time").value;
 
-    part.style.left = "50%";
-    part.style.top = "50%";
-
-    let x = (Math.random() * 400 - 200) + "px";
-    let y = (Math.random() * 400 - 200) + "px";
-
-    part.style.setProperty("--x", x);
-    part.style.setProperty("--y", y);
-
-    document.body.appendChild(part);
-
-    setTimeout(() => part.remove(), 800);
+  if (!d || !t) {
+    alert("Выбери дату и время ❤️");
+    return;
   }
 
-  setTimeout(() => {
-    secret.style.display = "none";
-    document.getElementById("app").style.display = "flex";
-  }, 500);
+  fetch("/yes?date=" + d + "&time=" + t);
+
+  document.body.innerHTML = "<h1>💘 Я жду тебя 💘</h1>";
 }
 
 /* ❤️ любовь */
@@ -224,7 +208,7 @@ function move() {
   b.style.top = Math.random() * (window.innerHeight - 50) + "px";
 }
 
-/* ❤️ фон сердечки */
+/* ❤️ фон */
 setInterval(() => {
   let h = document.createElement("div");
   h.className = "heart";
@@ -242,7 +226,7 @@ setInterval(() => {
   `);
 });
 
-// 📩 telegram
+/* 📩 TELEGRAM */
 app.get("/yes", async (req, res) => {
   try {
     const text =
